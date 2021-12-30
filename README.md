@@ -1,2 +1,2 @@
 # Shiny-tRophicPosition
- Contiene el codigo correspondiente al proyecto de titulo 
+ Codigo correspondiente a proyecto de titulo "Sistema de Información para el cálculo de la posición trófica basado en tRophicPosition"
