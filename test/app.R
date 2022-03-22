@@ -1,3 +1,4 @@
+  #rTrophicPosition 
   #Funcionalidad 1: Ingreso de información
   #Funcionalidad 2: chequeo y graficado de información
   #Funcionalidad 3: Establecer factor de discriminacion trofica (deltaN y/o deltaC)
@@ -17,6 +18,18 @@
   #dejar claro que funcionalidades hare yo, y que se elevara con shiny
   #ejemplificaciones visuales en el informe
 
+
+# 1)	Recolección de los datos otorgados por el usuario o la misma aplicación.
+# 2)	Limpieza de los datos otorgados por el usuario o la misma aplicación.
+# 3)	Exploración de los datos otorgados por el usuario o la misma aplicación.
+# 4)	Generación de graficas según las disponibles al momento por la aplicación.
+# 5)	Generar resúmenes visuales de los datos otorgados por el usuario o la misma aplicación.
+# 6)	Modificación de parámetros de los modelos.
+# 7)	Selección del tipo de modelos.
+# 8)	Demostración funcional de la aplicación.
+
+
+
   library(tRophicPosition)
   library(shiny)
   library(shinythemes)
@@ -25,25 +38,36 @@
   library(bslib)
 
   ui <- fluidPage(
-    theme = bs_theme(bootswatch = "pulse"),
+    
+    shiny::tags$head(
+      includeCSS("www/css/style.css")  
+    ),
+    
+    theme = bs_theme(bootswatch = "minty"),
 
     navbarPage(inverse = TRUE , position = c("static-top", "fixed-top", "fixed-bottom"),
-      "App Title",
-               tabPanel("Plot"),
-               navbarMenu("More",
-                          tabPanel("Summary"),
-                          "----",
-                          "Section header",
-                          tabPanel("Table")
-               )
+      "tRopicPosition",
+               # tabPanel("Plot"),
+               # navbarMenu("More",
+               #            tabPanel("Summary"),
+               #            "----",
+               #            "Section header",
+               #            tabPanel("Table")
+               # )
     ),
 
-    titlePanel("Ingrese los datos para su analizis"),
+    # titlePanel("Ingrese los datos para su analizis"),
 
     sidebarLayout(
 
       sidebarPanel(
-        'Example text'
+        h4('Ingrese los datos para su analizis'),
+        
+        fileInput("file",
+                  label = "Ingrese archivos por analizar",
+                  placeholder = "Ejemplo.csv",
+                  buttonLabel = "Buscar",
+                  multiple = TRUE,),
       ),
 
       mainPanel(
