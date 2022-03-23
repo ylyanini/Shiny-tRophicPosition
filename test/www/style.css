@@ -1,0 +1,56 @@
+/* Get a fancy font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
+
+body {
+  background-color: #c4c4c4;
+  color: white; /* text color */
+  font-family: MonserratFuente1;
+  text-shadow: 1px 1px 1px #fadede;
+  text-align: justify;
+}
+
+/* Change header text to imported font */
+h4 {
+  font-family: 'Yusei Magic', sans-serif;
+  color: blue;
+}
+
+/* Make text visible on inputs */
+.shiny-input-container {
+  color: #474747;
+}
+
+.navbar-header span{
+  font-size: 40px;
+  font-weight: bold;
+}
+
+li{
+  font-size: 20px;
+  font-weight: bold;
+  color: black;
+}
+
+
+*{
+    scroll-behavior: smooth;
+    min-width: auto;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+footer {
+    font-family: MonserratFuente2;
+    font-size: 20px;
+    text-shadow: 1px 1px 2px #c4c4c4;
+    background-color: #000000;
+    
+}
+
+header img{
+    height: 150px;
+    
+}
+
+
