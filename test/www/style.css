@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
 
 body {
-  background-color: #c4c4c4;
+  background-color: #e79fa2;
   color: white; /* text color */
   font-family: MonserratFuente1;
   text-shadow: 1px 1px 1px #fadede;
@@ -16,8 +16,8 @@ h4 {
 }
 
 /* Make text visible on inputs */
-.shiny-input-container {
-  color: #474747;
+*{
+  color: white23;
 }
 
 .navbar-header span{
@@ -28,7 +28,6 @@ h4 {
 li{
   font-size: 20px;
   font-weight: bold;
-  color: black;
 }
 
 
@@ -44,13 +43,11 @@ footer {
     font-family: MonserratFuente2;
     font-size: 20px;
     text-shadow: 1px 1px 2px #c4c4c4;
-    background-color: #000000;
-    
+    background-color: #8CBF3F;
 }
 
 header img{
     height: 150px;
-    
 }
 
 
