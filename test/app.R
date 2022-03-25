@@ -30,102 +30,106 @@
 
 
 
-library(tRophicPosition)
+# library(tRophicPosition)
 library(shiny)
-library(shinythemes)
+# library(shinythemes)
 library(data.table)
 library(ggplot2)
 library(bslib)
 
-ui <- fluidPage(
+ui <- fillPage(
   theme = bs_theme(version = 5),
-  shiny::tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+  
+  tags$head(
+    tags$link(rel = "stylesheet",
+              type = "text/css",
+              href = "style.css")
   ),
-
   
+  navbarPage(id='cabezera',
+             # position = c("static-top", "fixed-top", "fixed-bottom"),
+             h1("tRopicPosition Visual Tool")
+             ),
   
-  
-  navbarPage(
-    inverse = TRUE ,
-    position = c("static-top", "fixed-top", "fixed-bottom"),
-    "tRopicPosition",
-    # tabPanel("Plot"),
-    # navbarMenu("More",
-    #            tabPanel("Summary"),
-    #            "----",
-    #            "Section header",
-    #            tabPanel("Table")
-    # )
-  ),
   
   # titlePanel("Ingrese los datos para su analizis"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      titlePanel('Ingrese los datos para su analizis'),
-      
-      # fileInput("file",
-      #           label = "Ingrese archivos por analizar",
-      #           placeholder = "Ejemplo.csv",
-      #           buttonLabel = "Buscar",
-      #           multiple = TRUE,),
-      
-      fileInput("file1", "Choose CSV File", accept = c(".csv")),
-      checkboxInput("header", "Header", TRUE)
-    ),
-    
-    mainPanel(tabsetPanel(
-      tabPanel('Resumen de datos',  fluidRow(
-        column(width = 4,
-               "4"
-        ),
-        column(width = 3, offset = 2,
-               "3 offset 2"
-        )
+  fluidPage(
+    sidebarLayout(
+      sidebarPanel(id='formulario',
+                   titlePanel('Ingrese los datos para su analizis'),
+                   
+                   # fileInput("file",
+                   #           label = "Ingrese archivos por analizar",
+                   #           placeholder = "Ejemplo.csv",
+                   #           buttonLabel = "Buscar",
+                   #           multiple = TRUE,),
+                   
+                   fileInput("file1", "Choose CSV File", accept = c(".csv")),
+                   checkboxInput("header", "Header", TRUE)
       ),
-               "Table", icon = icon("fa-duotone fa-envelope"),
-               fluidRow(
-                 column(12,
-                        "Fluid 12",
-                        fluidRow(
-                          column(6,
-                                 "Fluid 6",
-                                 fluidRow(
-                                   column(6, 
-                                          "Fluid 6",
-                                          submitButton("Update View", icon = icon("bi bi-envelope"))),
-                                   column(6,
-                                          "Fluid 6",
-                                          navbarPage("App Title",
-                                                     tabPanel("Plot", icon = icon("bar-chart-o")),
-                                                     tabPanel("Summary", icon = icon("list-alt")),
-                                                     tabPanel("Table", icon = icon("fa-duotone fa-envelope"))
-                                          ))
-                                 )
-                          ),
-                          column(width = 6,
-                                 "Fluid 6")
-                        )
-                 )
-               )
-               ),
-      tabPanel('Tabla de datos', fluid = TRUE,
-               tableOutput('table')),
-      tabPanel('Graficos de datos', fluid = TRUE,)
-    ))
+      
+      mainPanel(tabsetPanel(
+        tabPanel(
+          'Resumen de datos',
+          # fluidRow(column(width = 4,
+          #                 "4"),
+          #          column(
+          #            width = 3, offset = 2,
+          #            "3 offset 2"
+          #          )),
+          # "Table",
+          # icon = icon("fa-duotone fa-envelope"),
+          # fluidRow(column(12,
+          #                 "Fluid 12",
+          #                 fluidRow(
+          #                   column(6,
+          #                          "Fluid 6",
+          #                          fluidRow(
+          #                            column(6,
+          #                                   "Fluid 6",
+          #                                   submitButton("Update View", icon = icon("bi bi-envelope"))),
+          #                            column(
+          #                              6,
+          #                              "Fluid 6",
+          #                              navbarPage(
+          #                                "App Title",
+          #                                tabPanel("Plot", icon = icon("bar-chart-o")),
+          #                                tabPanel("Summary", icon = icon("list-alt")),
+          #                                tabPanel("Table", icon = icon("fa-duotone fa-envelope"))
+          #                              )
+          #                            )
+          #                          )),
+          #                   column(width = 6,
+          #                          "Fluid 6")
+          #                 )))
+        ),
+        
+        tabPanel('Tabla de datos', fluid = TRUE,
+                 tableOutput('table')),
+        
+        tabPanel('Graficos de datos', fluid = TRUE, )
+      ))
+    )
   ),
-  tags$footer(HTML("
-                    <!-- Footer -->
-                           <footer class='page-footer font-large indigo'>
-                           <!-- Copyright -->
-                           <div class='footer-copyright text-center py-3'>© 2022 Copyright tRopicPosition
-                           </div>
-                           <!-- Copyright -->
-<i class='fa-duotone fa-envelope'></i>
-                           </footer>
-                           <!-- Footer -->")),
-  "Table", icon = icon("fa-duotone fa-envelope")
+  #   tags$footer(HTML("
+  #                     <!-- Footer -->
+  #                            <footer class='page-footer font-large indigo'>
+  #                            <!-- Copyright -->
+  #                            <div class='footer-copyright text-center py-3'>© 2022 Copyright tRopicPosition
+  #                            </div>
+  #                            <!-- Copyright -->
+  # <i class='fa-duotone fa-envelope'></i>
+  #                            </footer>
+  #                            <!-- Footer -->")),
+  #   "Table", icon = icon("fa-duotone fa-envelope"),
+
+  tags$footer(align = "center",
+    fluidRow(
+      column(4,'Logo'),
+      column(4,'© 2022 Copyright tRopicPosition'),
+      column(4,'Mail')
+    ),
+  )
   
 )
 
