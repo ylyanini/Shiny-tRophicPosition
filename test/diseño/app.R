@@ -37,14 +37,16 @@ library(data.table)
 library(ggplot2)
 library(bslib)
 
-ui <- fillPage(
+ui <- fluidPage(
+  options(shiny.maxRequestSize = 30*1024^2),
   theme = bs_theme(version = 5),
   
   tags$head(
     tags$link(rel = "stylesheet",
               type = "text/css",
-              href = "style.css")
+              href = "style.css"),
   ),
+  
   
   navbarPage(id='cabezera',
              # position = c("static-top", "fixed-top", "fixed-bottom"),
@@ -56,7 +58,7 @@ ui <- fillPage(
   fluidPage(
     sidebarLayout(
       sidebarPanel(id='formulario',
-                   titlePanel('Ingrese los datos para su analizis'),
+                   h4('Ingrese los datos para su analizis'),
                    
                    # fileInput("file",
                    #           label = "Ingrese archivos por analizar",
@@ -65,14 +67,50 @@ ui <- fillPage(
                    #           multiple = TRUE,),
                    
                    fileInput("file1", "Choose CSV File", accept = c(".csv")),
-                   checkboxInput("header", "Header", TRUE)
+                   checkboxInput("header", "Header", TRUE),
+                   radioButtons("sep", "Separador",
+                                choices = c(Comma = ",",
+                                            Semicolon = ";",
+                                            Tab = "\t"),
+                                selected = ","),
+                   radioButtons("quote", "Quote",
+                                choices = c(None = "",
+                                            "Double Quote" = '"',
+                                            "Single Quote" = "'"),
+                                selected = '"'),
+                   tags$hr(),
+                   
+                   # Input: Select number of rows to display ----
+                   radioButtons("disp", "Display",
+                                choices = c(Head = "head",
+                                            All = "all"),
+                                selected = "head")
       ),
       
       mainPanel(tabsetPanel(
         tabPanel(
           'Resumen de datos',
-          # fluidRow(column(width = 4,
+          fluidRow(
+            column(width=12,
+                   fluidRow(tags$p("TOP"),tableOutput('table'), style = "margin:5px; height:250px; background-color: #04ADBF; border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;"),
+                   ),
+            column(width = 4,
+                   fluidRow("Left", style = "margin:5px; height:150px; background-color: #04ADBF; border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;")),
+            column(width = 8,
+                   fluidRow("Right", style = "margin:5px; height:150px; background-color: #04ADBF; border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;"))
+          )
+          # fluidRow(column(width = 4,W
           #                 "4"),
+          
           #          column(
           #            width = 3, offset = 2,
           #            "3 offset 2"
@@ -105,7 +143,7 @@ ui <- fillPage(
         ),
         
         tabPanel('Tabla de datos', fluid = TRUE,
-                 tableOutput('table')),
+                 ),
         
         tabPanel('Graficos de datos', fluid = TRUE, )
       ))
@@ -123,7 +161,7 @@ ui <- fillPage(
   #                            <!-- Footer -->")),
   #   "Table", icon = icon("fa-duotone fa-envelope"),
 
-  tags$footer(align = "center",
+  tags$footer(
     fluidRow(
       column(4,'Logo'),
       column(4,'© 2022 Copyright tRopicPosition'),
@@ -137,8 +175,21 @@ ui <- fillPage(
 
 server <- function(input, output) {
   output$table <- renderTable({
-    input$file1
+    
+    df <- read.csv(input$file1$datapath,
+                   header = input$header,
+                   sep = input$sep,
+                   quote = input$quote)
+    
+    if(input$disp == "head"){
+      return(head(df))
+    }else{
+      return(df)
+    }
+    
   })
+  
+
   
 }
 
