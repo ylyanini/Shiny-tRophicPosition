@@ -1,0 +1,103 @@
+@font-face{
+    font-family: Lora;
+    src: url(/www/font/Lora/Lora-VariableFont_wght.ttf);
+}
+
+@font-face{
+    font-family: Montserrat_Alternates;
+    src: url(/www/font/Montserrat_Alternates/MontserratAlternates-Black.ttf);
+}
+
+*{
+  color: #ffffff;
+  scroll-behavior: smooth;
+  min-width: auto;
+  /*padding: 0;
+  margin: 0;*/
+;
+}
+
+body {
+  background-color: #f9f9f9;
+  font-family: Lora; /*importar*/
+  /*text-shadow: 1px 1px 1px #fadede;*/
+  text-align: justify;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-family:  Montserrat_Alternates; 
+}
+
+#encabezado h1{
+  background-color: #8CBF3F;
+  color: #000000;
+}
+
+#formulario{
+  font-size: 15px;
+  background-color: #04ADBF;
+  border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;
+  overflow:auto;
+  text-align: left;
+}
+
+#formulario h2{
+  text-align: center;
+}
+
+#espera{
+  font-size: 15px;
+  height: 350px
+  width: 50px;
+  background-color: #04ADBF;
+  border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;
+  overflow:auto;
+}
+}
+
+#resultados{
+  margin:5px; 
+  height:auto; 
+  background-color: #04ADBF; 
+  border-radius: 30px;
+  border-style: solid;
+  border-color: #03A688;
+  border-width: 4px;
+}
+
+#resultados h2{
+  color: #000000;
+  text-shadow: 1px 1px 1px #c4c4c4;
+}
+
+#resultados{
+  color: #000000;
+}
+
+li{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+footer {
+    text-align: center;
+    font-size: 25px;
+    bottom:0; 
+    width:100%;
+    height:auto; 
+    color: white;
+    margin-top: 25px;
+    background-color: #8CBF3F;
+    z-index: 1000;
+   
+}
+
+
+
