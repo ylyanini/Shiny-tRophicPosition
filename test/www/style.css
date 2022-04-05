@@ -1,83 +1,56 @@
 @font-face{
-    font-family: Lora;
-    src: url(/www/font/Lora/Lora-VariableFont_wght.ttf);
+    font-family: 'Lora', serif;
+    src: url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
 }
 
 @font-face{
-    font-family: Montserrat_Alternates;
-    src: url(/www/font/Montserrat_Alternates/MontserratAlternates-Black.ttf);
+    font-family: 'Montserrat Alternates', sans-serif;
+    src: url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@800&display=swap');
+}
+
+body::-webkit-scrollbar {
+  width: 4px;               
+}
+
+body::-webkit-scrollbar-track {
+  background: #FFFFFF;        
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #04ADBF;    
+  border-radius: 40px;       
+  border: 1px solid #03A688;  
 }
 
 *{
-  color: #ffffff;
+  color: #000000;
   scroll-behavior: smooth;
-  min-width: auto;
-  /*padding: 0;
-  margin: 0;*/
-;
+  padding: 0;
+  margin: 0;
+
 }
 
 body {
   background-color: #f9f9f9;
-  font-family: Lora; /*importar*/
-  /*text-shadow: 1px 1px 1px #fadede;*/
+  font-family: 'Lora', serif;
   text-align: justify;
 }
 
-h1,h2,h3,h4,h5,h6{
-  font-family:  Montserrat_Alternates; 
+h1, h2, h3{
+  text-shadow: -1px 0 1px #c9c9c9;
+  font-family: 'Montserrat Alternates', sans-serif;
 }
 
-#encabezado h1{
-  background-color: #8CBF3F;
-  color: #000000;
-}
-
-#formulario{
-  font-size: 15px;
+nav {
   background-color: #04ADBF;
-  border-radius: 30px;
-  border-style: solid;
-  border-color: #03A688;
-  border-width: 4px;
-  overflow:auto;
-  text-align: left;
 }
 
-#formulario h2{
-  text-align: center;
+hr{
+  border-top: 2px solid #04ADBF;
 }
 
-#espera{
-  font-size: 15px;
-  height: 350px
-  width: 50px;
-  background-color: #04ADBF;
-  border-radius: 30px;
-  border-style: solid;
-  border-color: #03A688;
-  border-width: 4px;
-  overflow:auto;
-}
-}
-
-#resultados{
-  margin:5px; 
-  height:auto; 
-  background-color: #04ADBF; 
-  border-radius: 30px;
-  border-style: solid;
-  border-color: #03A688;
-  border-width: 4px;
-}
-
-#resultados h2{
-  color: #000000;
-  text-shadow: 1px 1px 1px #c4c4c4;
-}
-
-#resultados{
-  color: #000000;
+table{
+  border: 1px solid rgba( 255, 255, 255, 0.18 )
 }
 
 li{
@@ -89,15 +62,87 @@ li{
 footer {
     text-align: center;
     font-size: 25px;
-    bottom:0; 
+    bottom:0;
     width:100%;
-    height:auto; 
+    height:120px; 
     color: white;
-    margin-top: 25px;
+    margin-top: 35px;
     background-color: #8CBF3F;
     z-index: 1000;
-   
 }
+
+.button {
+  background-color: #04ADBF;
+  font-weight: bold;
+}
+
+#formulario h1,h2{
+  text-align: center;
+  font-weight: bold;
+}
+
+#formulario{
+  font-size: 15px;
+  overflow:auto;
+  text-align: left;
+
+  border-width: 4px;
+  background: rgba( 234, 255, 248, 0.5 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 20px );
+  -webkit-backdrop-filter: blur( 20px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+#espera{
+  font-size: 15px;
+  height: 350px
+  width: 50px;
+  overflow:auto;
+  text-align: center;
+  
+  border-style: solid;
+  border-width: 4px;
+  background: rgba( 234, 255, 248, 0.5 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 20px );
+  -webkit-backdrop-filter: blur( 20px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+#DataTables_Table_0_wrapper *{
+
+}
+
+#DataTables_Table_0_wrapper th{
+  font-weight: bold;
+}
+
+#DataTables_Table_0_wrapper td{
+
+}
+
+#resultados{
+  margin-bottom:10px;
+  padding: 25px;
+  height:auto; 
+  
+  border-style: solid;
+  border-width: 4px;
+  background: rgba( 234, 255, 248, 0.5 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 20px );
+  -webkit-backdrop-filter: blur( 20px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+#resultados h2{
+  text-align: center;
+}
+
 
 
 

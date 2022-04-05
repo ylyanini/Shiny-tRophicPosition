@@ -1,3 +1,22 @@
+#Funcionalidad 1: Ingreso de información
+#Funcionalidad 2: chequeo y graficado de información
+#Funcionalidad 3: Establecer factor de discriminacion trofica (deltaN y/o deltaC)
+#Funcionalidad 4: Establecer modelo Bayesiano
+#Funcionalidad 5: Crear modelo JAGS/BUGS
+#Funcionalidad 6: Generar muestras a posteriori
+#Funcionalidad 7: Combinar, resumir gy graficar muestras a posteriori
+
+#objetivo de la implementacion
+#greta como formato sobre bugs
+#metricas
+#tanto comparacion de rendimiento como nuevas funcionalidades como publicacion
+
+#isotop data a distintos formatos
+#exportacion de luis para la carcasa
+#dejar claro que funcionalidades hare yo, y que se elevara con shiny
+#ejemplificaciones visuales en el informe
+
+
 
 library(shiny)
 library(DT)
@@ -13,22 +32,38 @@ shinyUI(fluidPage(
               type = "text/css",
               href = "style.css"),
   ),
-  tags$h1("Logica"),
+  
+  # tags$nav(
+  #   id = 'encabezado',
+  #   class = "navbar navbar-light bg-light",
+  #   tags$div(class = "container-fluid",
+  #            tags$h1(
+  #              "tRophicPosition Aplication"))
+  # ),
+  
+  
+  
+  
   sidebarLayout(
     sidebarPanel(
-      id='formulario',
+      id = 'formulario',
       tags$h2("Archivo csv"),
+      
       fileInput(
         'file',
-        'Choose file to upload',
+        tags$h3('Seleccione el archivo'),
         accept = c('text/csv',
                    'text/comma-separated-values',
-                   '.csv')
+                   '.csv'),
+        buttonLabel = tags$b("CARGAR"),
+        placeholder = "Ejemplo.csv"
       ),
-      checkboxInput("header", "Header", TRUE),
+      
+      checkboxInput("header", "Encabezado", TRUE),
+      
       radioButtons(
         "sep",
-        "Separator: ",
+        tags$h3("Separador"),
         choices = c(
           Comma = ",",
           Semicolon = ";",
@@ -41,7 +76,7 @@ shinyUI(fluidPage(
       
       radioButtons(
         "quote",
-        "Quote",
+        tags$h3("Comillas"),
         choices = c(
           None = "",
           "Double Quote" = '"',
@@ -50,21 +85,22 @@ shinyUI(fluidPage(
         selected = '"',
         inline = TRUE
       ),
-      # Input: Select number of rows to display ----
+
       radioButtons(
         "disp",
-        "Display",
-        choices = c(Head = "head",
-                    All = "all"),
-        selected = "head",
+        tags$h3("Mostrar"),
+        choices = c(Encabezado = "head",
+                    Todo = "all"),
+        selected = "all",
         inline = TRUE
       ),
+      submitButton("Enviar"),
       tags$hr(),
       tags$h2('tRophicPosition'),
       
       
       
-      tags$h3('Model'),
+      tags$h3('Model', icon("fas fa-chart-bar")),
       numericInput('n.chains',
                    h4('n.chains'),
                    value = 4),
@@ -109,21 +145,18 @@ shinyUI(fluidPage(
       textInput('groupsColumn',
                 h4('groupsColumn'),
                 value = 'Location'),
-      
-      h3("Buttons"),
-      actionButton("action", "Action"),
-      br(),
-      br(),
-      submitButton("Submit"),
+   
+      submitButton("Enviar"),
       
       
     ),
     mainPanel(uiOutput("content"))
   ),
-  tags$footer(
-    fluidRow(
-      column(4,'Logo'),
-      column(4,'© 2022 Copyright tRopicPosition'),
-      column(4,'Mail')
-    ))
+  
+  # tags$footer(fluidRow(
+  #   column(5, 'Logo'),
+  #   column(2, '© 2022 Copyright tRopicPosition'),
+  #   column(5, 'Mail')
+  # ))
+  
 ))

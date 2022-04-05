@@ -1,21 +1,3 @@
-#Funcionalidad 1: Ingreso de información
-#Funcionalidad 2: chequeo y graficado de información
-##Funcionalidad 3: Establecer factor de discriminacion trofica (deltaN y/o deltaC)
-#Funcionalidad 4: Establecer modelo Bayesiano
-#Funcionalidad 5: Crear modelo JAGS/BUGS
-#Funcionalidad 6: Generar muestras a posteriori
-#Funcionalidad 7: Combinar, resumir gy graficar muestras a posteriori
-
-#objetivo de la implementacion
-#greta como formato sobre bugs
-#metricas
-#tanto comparacion de rendimiento como nuevas funcionalidades como publicacion
-
-
-#isotop data a distintos formatos
-#exportacion de luis para la carcasa
-#dejar claro que funcionalidades hare yo, y que se elevara con shiny
-#ejemplificaciones visuales en el informe
 
 library(tRophicPosition)
 
