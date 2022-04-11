@@ -17,7 +17,7 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #04ADBF;    
+  background-color: rgba( 234, 255, 248, 0.5 );    
   border-radius: 40px;       
   border: 1px solid #03A688;  
 }
@@ -25,8 +25,7 @@ body::-webkit-scrollbar-thumb {
 *{
   color: #000000;
   scroll-behavior: smooth;
-  padding: 0;
-  margin: 0;
+
 
 }
 
@@ -58,7 +57,6 @@ li{
   font-weight: bold;
 }
 
-
 footer {
     text-align: center;
     font-size: 25px;
@@ -76,6 +74,24 @@ footer {
   font-weight: bold;
 }
 
+#plot{
+  border-width: 4px;
+  background: rgba( 234, 255, 248, 0.5 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 20px );
+  -webkit-backdrop-filter: blur( 20px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+#plot img{
+  padding: 15px;
+
+}
+
+#nav-tabs{
+  margin-top: 100px;
+}
+
 #formulario h1,h2{
   text-align: center;
   font-weight: bold;
@@ -85,6 +101,8 @@ footer {
   font-size: 15px;
   overflow:auto;
   text-align: left;
+  
+  
 
   border-width: 4px;
   background: rgba( 234, 255, 248, 0.5 );
@@ -94,6 +112,7 @@ footer {
   border-radius: 10px;
   border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
+
 
 #espera{
   font-size: 15px;

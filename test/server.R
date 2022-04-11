@@ -1,4 +1,6 @@
 
+
+
 library(shiny)
 library(DT)
 library(tRophicPosition)
@@ -121,49 +123,59 @@ shinyServer(function(input, output) {
   })
   
   
-  output$content <- renderUI({
+  output$content_data <- renderUI({
     if (is.null(input$file)) {
       return(fluidRow(column(
-        width = 11,
+        width = 12,
         fluidRow(id = 'espera',
                  tags$h2("Ingrese datos para su analisis"),)
       )))
     } else{
       fluidRow(
-        column(id = 'resultados',
-          
-          width = 11,
-          fluidRow(tags$h2("Table"),
-                   DT::dataTableOutput("sample_table"))
-        ),
-        column(id = 'resultados',
-          
-          width = 11,
-          fluidPage(tags$h2("Data Summary"),
-                    verbatimTextOutput('summary'),
-                    tags$h2("Plot", icon("fas fa-chart-bar")),
-                    plotOutput('plot'),
-                    actionButton("action", "Descargar"),)
-        ),
+        column(width = 12,
+               fluidRow(
+                 tags$h2("Table"),
+                 DT::dataTableOutput("sample_table")
+               )),
+        column(width = 12,
+               fluidPage(
+                 tags$h2("Data Summary"),
+                 verbatimTextOutput('summary')
+               )),
+        column(width = 12,
+               fluidPage(
+                 tags$h2("Plot"),
+                 plotOutput('plot'),
+               ))
         
-        column(id = 'resultados',
-          
-          width = 11,
-          fluidPage(
-            tags$h2("Posterior Summary", icon("file-lines")),
-            verbatimTextOutput('post_summary'),
-            tags$h2("Plot", icon("fas fa-chart-bar")),
-            plotOutput('plot_post'),
-            actionButton("action", "Descargar"),
-            tags$h2("Plot", icon("fas fa-chart-bar")),
-            plotOutput('plot_TP'),
-            actionButton("action", "Descargar"),
-          )
-        ),
       )
     }
     
   })
+  
+  output$content_TP <- renderUI({
+    if (is.null(input$file)) {
+      return(fluidRow(column(
+        width = 12,
+        fluidRow(id = 'espera',
+                 tags$h2("Ingrese datos para su analisis"),)
+      )))
+    } else{
+      fluidRow(column(width = 12,
+                      fluidPage(
+                        tags$h2("Posterior Summary"),
+                        verbatimTextOutput('post_summary')
+                      )),
+               
+               column(width = 12,
+                      fluidPage(
+                        tags$h2("Plot"),
+                        plotOutput('plot_post'),
+                        plotOutput('plot_TP')
+                      )),)
+    }
+  })
+  
   
   
 })

@@ -1,4 +1,6 @@
 
+
+
 library(shiny)
 library(DT)
 library(tRophicPosition)
@@ -121,18 +123,13 @@ shinyServer(function(input, output) {
   })
   
   
-  output$content <- renderUI({
+  output$content_data <- renderUI({
     if (is.null(input$file)) {
-      return(
-        fluidRow(
-          column(width = 12,
-                 fluidRow(
-                   id='espera',
-                   tags$h2("Ingrese datos para su analisis"),
-                 ))
-        )
-        
-      )
+      return(fluidRow(column(
+        width = 12,
+        fluidRow(id = 'espera',
+                 tags$h2("Ingrese datos para su analisis"),)
+      )))
     } else{
       fluidRow(
         column(width = 12,
@@ -145,27 +142,40 @@ shinyServer(function(input, output) {
                  tags$h2("Data Summary"),
                  verbatimTextOutput('summary')
                )),
-        
         column(width = 12,
                fluidPage(
-                 tags$h2("Posterior Summary"),
-                 verbatimTextOutput('post_summary')
-               )),
-        
-        column(
-          width = 12,
-          fluidPage(
-            tags$h2("Plot"),
-            plotOutput('plot'),
-            plotOutput('plot_post'),
-            plotOutput('plot_TP')
-          )
-        ),
+                 tags$h2("Plot"),
+                 plotOutput('plot'),
+               ))
         
       )
     }
     
   })
+  
+  output$content_TP <- renderUI({
+    if (is.null(input$file)) {
+      return(fluidRow(column(
+        width = 12,
+        fluidRow(id = 'espera',
+                 tags$h2("Ingrese datos para su analisis"),)
+      )))
+    } else{
+      fluidRow(column(width = 12,
+                      fluidPage(
+                        tags$h2("Posterior Summary"),
+                        verbatimTextOutput('post_summary')
+                      )),
+               
+               column(width = 12,
+                      fluidPage(
+                        tags$h2("Plot"),
+                        plotOutput('plot_post'),
+                        plotOutput('plot_TP')
+                      )),)
+    }
+  })
+  
   
   
 })
