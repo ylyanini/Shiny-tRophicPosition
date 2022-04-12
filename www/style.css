@@ -22,11 +22,14 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid #03A688;  
 }
 
+.input-group-btn .input-group-prependn{
+  background-color: red;
+  color: red;
+}
+
 *{
   color: #000000;
   scroll-behavior: smooth;
-
-
 }
 
 body {
@@ -45,7 +48,7 @@ nav {
 }
 
 hr{
-  border-top: 2px solid #04ADBF;
+  border-top: 2px solid #c4c4c4;
 }
 
 table{
@@ -55,6 +58,14 @@ table{
 li{
   font-size: 20px;
   font-weight: bold;
+}
+
+ul{
+  background-color: rgba( 234, 255, 248, 0.5 );
+  text-align: left;
+  font-weight: bold;
+  color: #f9f9f9;
+  font-family: 'Montserrat Alternates', sans-serif;
 }
 
 footer {
@@ -69,22 +80,12 @@ footer {
     z-index: 1000;
 }
 
-.button {
-  background-color: #04ADBF;
-  font-weight: bold;
+#plot{
+
 }
 
-#plot{
-  border-width: 4px;
-  background: rgba( 234, 255, 248, 0.5 );
-  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-  backdrop-filter: blur( 20px );
-  -webkit-backdrop-filter: blur( 20px );
-  border-radius: 10px;
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-}
 #plot img{
-  padding: 15px;
+  padding: 10px;
 
 }
 
@@ -101,8 +102,6 @@ footer {
   font-size: 15px;
   overflow:auto;
   text-align: left;
-  
-  
 
   border-width: 4px;
   background: rgba( 234, 255, 248, 0.5 );
@@ -120,6 +119,7 @@ footer {
   width: 50px;
   overflow:auto;
   text-align: center;
+  margin-top: 100px;
   
   border-style: solid;
   border-width: 4px;
@@ -140,14 +140,15 @@ footer {
 }
 
 #DataTables_Table_0_wrapper td{
-
+  
 }
 
 #resultados{
   margin-bottom:10px;
   padding: 25px;
   height:auto; 
-  
+
+    
   border-style: solid;
   border-width: 4px;
   background: rgba( 234, 255, 248, 0.5 );
@@ -161,7 +162,3 @@ footer {
 #resultados h2{
   text-align: center;
 }
-
-
-
-

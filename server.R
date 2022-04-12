@@ -1,12 +1,12 @@
 
 
-
 library(shiny)
 library(DT)
 library(tRophicPosition)
 library(data.table)
 library(ggplot2)
 library(bslib)
+library(summarytools)
 
 shinyServer(function(input, output) {
   df_upload <- reactive({
@@ -74,7 +74,9 @@ shinyServer(function(input, output) {
   
   output$sample_table <- DT::renderDataTable({
     df <- df_upload()
-    DT::datatable(df)
+    DT::datatable(df,
+                  class = 'cell-border stripe',
+                  options = list(pageLength = 8, dom = 'tip'))
   })
   
   output$summary <- renderPrint({
@@ -125,28 +127,43 @@ shinyServer(function(input, output) {
   
   output$content_data <- renderUI({
     if (is.null(input$file)) {
-      return(fluidRow(column(
-        width = 12,
-        fluidRow(id = 'espera',
-                 tags$h2("Ingrese datos para su analisis"),)
-      )))
+      return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Ingrese datos para su analisis",icon("table")),
+                 
+               )),
+        column(width = 2),
+      ))
     } else{
       fluidRow(
-        column(width = 12,
-               fluidRow(
-                 tags$h2("Table"),
-                 DT::dataTableOutput("sample_table")
-               )),
-        column(width = 12,
-               fluidPage(
-                 tags$h2("Data Summary"),
-                 verbatimTextOutput('summary')
-               )),
-        column(width = 12,
-               fluidPage(
-                 tags$h2("Plot"),
-                 plotOutput('plot'),
-               ))
+        column(
+          width = 11,
+          fluidPage(
+            id = 'resultados',
+            tags$h2("Table"),
+            DT::dataTableOutput("sample_table")
+          )
+        ),
+        column(
+          width = 11,
+          fluidPage(
+            id = 'resultados',
+            tags$h2("Data Summary"),
+            verbatimTextOutput('summary'),
+
+            
+          )
+        ),
+        column(
+          width = 11,
+          fluidPage(id = 'resultados',
+                    tags$h2("Plot"),
+                    plotOutput('plot'),)
+        )
         
       )
     }
@@ -155,27 +172,43 @@ shinyServer(function(input, output) {
   
   output$content_TP <- renderUI({
     if (is.null(input$file)) {
-      return(fluidRow(column(
-        width = 12,
-        fluidRow(id = 'espera',
-                 tags$h2("Ingrese datos para su analisis"),)
-      )))
+      return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Ingrese datos para su analisis",icon("table")),
+               )),
+        column(width = 2),
+      ))
     } else{
-      fluidRow(column(width = 12,
-                      fluidPage(
-                        tags$h2("Posterior Summary"),
-                        verbatimTextOutput('post_summary')
-                      )),
-               
-               column(width = 12,
-                      fluidPage(
-                        tags$h2("Plot"),
-                        plotOutput('plot_post'),
-                        plotOutput('plot_TP')
-                      )),)
+      fluidRow(column(
+        width = 11,
+        fluidPage(
+          id = 'resultados',
+          tags$h2("Posterior Summary"),
+          verbatimTextOutput('post_summary')
+        )
+      ),
+      
+      column(
+        width = 11,
+        fluidPage(
+          id = 'resultados',
+          tags$h2("Plot"),
+          plotOutput('plot_post'),
+          
+        )
+      ),
+      column(
+        width = 11,
+        fluidPage(
+          id = 'resultados',
+          tags$h2("Plot"),
+          plotOutput('plot_TP')
+        )
+      ),)
     }
   })
-  
-  
-  
 })

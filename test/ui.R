@@ -21,8 +21,7 @@
 library(shiny)
 library(DT)
 library(tRophicPosition)
-library(data.table)
-# library(ggplot2)
+library(ggplot2)
 library(bslib)
 
 
@@ -47,7 +46,6 @@ tabsetPanel(
              sidebarPanel(
                id = 'formulario',
                tags$h2("Archivo csv"),
-               
                
                ## ------------------------------------------------------------
                # Carga de archivo
@@ -77,14 +75,14 @@ tabsetPanel(
                  inline = TRUE
                ),
                
-               radioButtons(
-                 "disp",
-                 tags$h3("Mostrar"),
-                 choices = c(Encabezado = "head",
-                             Todo = "all"),
-                 selected = "all",
-                 inline = TRUE
-               ),
+               # radioButtons(
+               #   "disp",
+               #   tags$h3("Mostrar"),
+               #   choices = c(Encabezado = "head",
+               #               Todo = "all"),
+               #   selected = "all",
+               #   inline = TRUE
+               # ),
                
                checkboxInput("header",
                              tags$b("Viene con Encabezado?"),
@@ -123,14 +121,14 @@ tabsetPanel(
                             value = 5000),
                
                
-               
+               tags$hr(),
                tags$h3('posterior.samples'),
                numericInput('n.iter',
                             h4('n.iter'),
                             value = 15000),
                
                
-               
+               tags$hr(),
                tags$h3('loadIsotopeData'),
                textInput('consumer',
                          h4('consumer'),
