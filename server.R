@@ -1,5 +1,6 @@
 
 
+
 library(shiny)
 library(DT)
 library(tRophicPosition)
@@ -76,20 +77,32 @@ shinyServer(function(input, output) {
     df <- df_upload()
     DT::datatable(df,
                   class = 'cell-border stripe',
-                  options = list(pageLength = 8, dom = 'tip'))
+                  options = list(pageLength = 10, dom = 'tip'))
   })
   
   output$summary <- renderPrint({
     summary(df_upload())
   })
   
-  output$plot <- renderPlot({
+  output$screenfoodweb <- renderPlot({
+    df <- df_upload()
+
+    screenFoodWeb(
+      df,
+      grouping = c("Spp", "FG"),
+      title = "Example",
+      order = TRUE
+    )
+    
+  })
+  
+  output$plot_content <- renderPlot({
     consumer <- isotopeData()
     
     plot(consumer)
     
   })
-  
+    
   output$post_summary <- renderPrint({
     posterior_samples <- posterior()
     
@@ -133,42 +146,84 @@ shinyServer(function(input, output) {
         column(width = 7,
                fluidRow(
                  id = 'espera',
-                 tags$h2("Ingrese datos para su analisis",icon("table")),
+                 tags$h2("Ingrese datos para su analisis", icon("table")),
                  
                )),
         column(width = 2),
       ))
     } else{
+      df <- df_upload()
       fluidRow(
         column(
-          width = 11,
+          width = 12,
           fluidPage(
             id = 'resultados',
-            tags$h2("Table"),
+            tags$h2("Data Table"),
             DT::dataTableOutput("sample_table")
           )
         ),
         column(
-          width = 11,
+          width = 12,
           fluidPage(
             id = 'resultados',
             tags$h2("Data Summary"),
-            verbatimTextOutput('summary'),
-
+            
+            st_options(dfSummary.custom.2 =
+                         expression(
+                           paste(
+                             "Q1 & Q4 :",
+                             
+                             quantile(
+                               column_data,
+                               probs = .25,
+                               type = 2,
+                               names = FALSE,
+                               na.rm = TRUE
+                             ),
+                             digits = 1
+                             ,
+                             " & ",
+                             
+                             quantile(
+                               column_data,
+                               probs = 1,
+                               type = 2,
+                               names = FALSE,
+                               na.rm = TRUE
+                             ),
+                             digits = 1
+                             
+                           )
+                         )),
+            
+            print(
+              dfSummary(
+                df,
+                varnumbers   = TRUE,
+                valid.col    = FALSE,
+                style        = "multiline",
+                graph.magnif = 1.5
+              ),
+              method   = 'render',
+              headings = FALSE,
+              bootstrap.css = FALSE
+            )
+            
             
           )
         ),
         column(
-          width = 11,
+          width = 12,
           fluidPage(id = 'resultados',
-                    tags$h2("Plot"),
-                    plotOutput('plot'),)
+                    tags$h2("Data Species"),
+                    plotOutput('screenfoodweb'), )
         )
         
       )
     }
     
   })
+  
   
   output$content_TP <- renderUI({
     if (is.null(input$file)) {
@@ -178,37 +233,81 @@ shinyServer(function(input, output) {
         column(width = 7,
                fluidRow(
                  id = 'espera',
-                 tags$h2("Ingrese datos para su analisis",icon("table")),
+                 tags$h2("Ingrese datos para su analisis", icon("table")),
                )),
         column(width = 2),
       ))
     } else{
-      fluidRow(column(
-        width = 11,
-        fluidPage(
-          id = 'resultados',
-          tags$h2("Posterior Summary"),
-          verbatimTextOutput('post_summary')
+      fluidRow(
+        column(
+          width = 12,
+          fluidPage(
+            id = 'resultados',
+            tags$h2("Plot Isotope Object"),
+            plotOutput('plot_content')
+          )
         )
-      ),
-      
-      column(
-        width = 11,
-        fluidPage(
-          id = 'resultados',
-          tags$h2("Plot"),
-          plotOutput('plot_post'),
-          
-        )
-      ),
-      column(
-        width = 11,
-        fluidPage(
-          id = 'resultados',
-          tags$h2("Plot"),
-          plotOutput('plot_TP')
-        )
-      ),)
+      )
     }
   })
+  
+  
+  output$content_model <- renderUI({
+    if (is.null(input$file)) {
+      return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Ingrese datos para su analisis", icon("table")),
+               )),
+        column(width = 2),
+      ))
+    }else{
+      
+    } 
+    
+  })
+  
+  
+  output$content_posterior <- renderUI({
+    if (is.null(input$file)) {
+      return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Ingrese datos para su analisis", icon("table")),
+               )),
+        column(width = 2),
+      ))
+    }else{
+      fluidRow(
+        column(
+          width = 12,
+          fluidPage(
+            id = 'resultados',
+            tags$h2("Posterior Summary"),
+            verbatimTextOutput('post_summary')
+          )
+        ),
+        column(
+          width = 12,
+          fluidPage(id = 'resultados',
+                    tags$h2("Plot"),
+                    plotOutput('plot_post'),)
+        ),
+        column(
+          width = 12,
+          fluidPage(id = 'resultados',
+                    tags$h2("Plot"),
+                    plotOutput('plot_TP'))
+        ),
+      )
+    } 
+    
+  })
+  
 })
