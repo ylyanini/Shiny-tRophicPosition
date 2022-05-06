@@ -25,6 +25,7 @@ body::-webkit-scrollbar-thumb {
 *{
   color: #000000;
   scroll-behavior: smooth;
+  overflow-y: visible ;
 }
 
 body {
@@ -40,6 +41,9 @@ h1, h2, h3,h4{
   font-weight: bold;
 }
 
+h2{
+  margin-top: 15px;
+}
 nav {
   background-color: #04ADBF;
   margin-bottom: 30px;
@@ -131,7 +135,8 @@ div>p{
   font-size: 15px;
   overflow:auto;
   text-align: left;
-
+  overflow-y: auto;
+  height: 100%;
   border-width: 4px;
   background: rgba( 234, 255, 248, 0.5 );
   box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );

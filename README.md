@@ -1,4 +1,7 @@
+
 # Shiny-tRophicPosition
+
+![Shiny  tRophicPosition logo](https://raw.githubusercontent.com/ylyanini/Shiny-tRophicPosition/main/www/img/logo2.png)
 
 Código correspondiente a proyecto de titulo "Sistema de Información para el cálculo de la posición trófica basado en tRophicPosition"
 para optar al titulo de Ingeniero en Informática con Mención en Gestión de la Información.
@@ -7,27 +10,29 @@ El desarrollado del proyecto fue realizado por el estudiante Yan Lucaveche Alarc
 
 ## Descripción
 
-Aplicación basada en Shiny apps en conjunto del paquete tRophicPosition buscando ofrecer las prestaciones de este este ultimo a investigadores o  entusiastas en busca de conocer el mundo de las posiciones tróficas y sus beneficios. 
+Aplicación basada en Shiny en conjunto del paquete tRophicPosition buscando ofrecer las prestaciones de este este ultimo a investigadores o entusiastas interesados en conocer el mundo de las posiciones tróficas y sus beneficios. 
 
 ### Librerías utilizadas
-- shiny
-- DT
-- tRophicPosition
-- ggplot2
-- bslib
+- [**DT**](https://github.com/rstudio/DT)
+- [**shiny**](https://github.com/rstudio/shiny)
+- [**waiter**](https://github.com/JohnCoene/waiter)
+- [**shinyjs**](https://github.com/daattali/shinyjs)
+- [**shinyWidgets**](https://github.com/dreamRs/shinyWidgets)
+- [**summarytools**](https://github.com/dcomtois/summarytools)
+- [**tRophicPosition**](https://github.com/clquezada/tRophicPosition)
 
 ## Usabilidad 
 El proyecto esta separados en módulos para seguir el flujo de trabajo del paquete tRophicPosition.
 Estos módulos se componen en:
 
 1) Carga de datos
-2) Creación de objeto para el calculo
-2) Muestreo y posición trófica
+2) Creación de objeto IsotopeData para el calculo
+2) Muestreo a posteriori y posición trófica
 
 ## Contacto
 
-Este proyecto esta en constante desarrollo así que para mayor información y consultas por favor dirigirse a las redes de contacto sugeridas:
+Este proyecto esta en constante desarrollo así que para mayor información, consultas y sugerencias por favor dirigirse a las redes de contacto sugeridas:
 
-Correo: yan.lucaveche@gmail.cl
-Instagram: @yaninigram
-Twitter: @ylyanini
+ - Correo: yan.lucaveche@gmail.cl  
+ - Instagram: @yaninigram  
+ - Twitter: @ylyanini

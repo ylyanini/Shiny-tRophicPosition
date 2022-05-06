@@ -1,11 +1,11 @@
 
-library(shiny)
 library(DT)
-library(tRophicPosition)
-library(ggplot2)
+library(shiny)
+library(waiter)
+library(shinyjs)
 library(shinyWidgets)
 library(summarytools)
-library(waiter)
+library(tRophicPosition)
 
 
 shinyUI(
@@ -26,15 +26,16 @@ shinyUI(
       
     ),
     
-    
     tags$head(
       tags$link(rel = "stylesheet",
                 type = "text/css",
                 href = "style.css"),
     ),
+    
     tags$head(
-      HTML('<link rel="icon", href="img/logo.png",
-                                   type="image/png" />')
+      HTML('<link rel="icon", 
+                  href="img/logo.png",
+                  type="image/png" />')
     ),
     
     navbarPage(
@@ -42,15 +43,17 @@ shinyUI(
         img(
           src = 'img/logo.png',
           style = "margin-top: -14px;
-                               padding-right:9px;
-                               padding-bottom:9px",
+                   padding-right:9px;
+                   padding-bottom:9px",
           height = 100
         )
       ),
+
       windowTitle = "Shiny-tRophicPosition",
       
       ## ------------------------------------------------------------
       # Upload the file
+      
       tabPanel("Dataset",
                sidebarLayout(
                  sidebarPanel(
@@ -91,27 +94,50 @@ shinyUI(
                      selected = TRUE,
                      inline = TRUE,
                    ),
-
-                   selectInput(
-                     'select_a_file',
-                     tags$h3('Name of File'),
-                     choices =  c(list.files('data/'), 'New')
-                   ),
+                  
+                   # Select file (under development)
+                   # selectInput(
+                   #   'select_a_file',
+                   #   tags$h3('Name of File'),
+                   #   choices =  c(list.files('data/'), 'New'),
+                   #   selected = NULL
+                   # ),
+                   # 
+                   # uiOutput("select_file"),
                    
-                   uiOutput("select_file"),
+                   fileInput(
+                     'file',
+                     tags$h3('Upload a File'),
+                     accept = c('text/csv',
+                                'text/comma-separated-values',
+                                '.csv'),
+                     buttonLabel = tags$b("UPLOAD"),
+                     placeholder = "Example.csv",
+                     multiple = FALSE,
+                   ),
                    
                    actionBttn(
                      inputId = "up_file",
                      tags$h4("UPLOAD"),
                      style = "fill",
                      color = "success",
+                     size = "sm",
+                     block = TRUE
                    ),
+                  
+                  useShinyjs(),
+                   actionBttn(inputId = "refresh", 
+                              tags$h4("CLEAR"),
+                              style = "fill",
+                              color = "danger",
+                              block = TRUE,
+                              
+                              )
                    
                    
                  ),
-                 mainPanel(uiOutput("content_data"),
-                           #verbatimTextOutput(outputId = "res_bttn2")
-                           )
+                 mainPanel(uiOutput("content_data"))
+                          
                ),),
       
       ## ------------------------------------------------------------
@@ -122,53 +148,53 @@ shinyUI(
         sidebarLayout(
           sidebarPanel(
             id = 'formulario',
-            tags$h2('Trophic Discrimination Factor', icon("fas fa-cog")),
+            uiOutput("load_isotope"),
+            
+            tags$h2('Load TDF', icon("fas fa-cog")),
             tags$hr(),
             selectInput(
               inputId = "TDF_author",
               label = tags$h4("author"),
-              choices = c('Post (2002)',
-                          'McCutchan (2003)',
-                          'New'),
-              selected = 'Post (2002)'
+              choices = c('Post (2002)' = 'Post',
+                          'McCutchan (2003)' = 'McCutchan'
+                          # 'New'
+                          ),
             ),
             
-            uiOutput("type_select"),
+            conditionalPanel(
+              condition = "input.TDF_author == 'McCutchan'",
+              selectInput(
+                'type',
+                tags$h4('type'),
+                choices = c(
+                  'All' = 'all',
+                  'Whole' = 'whole',
+                  'Muscle' = 'muscle',
+                  'Acidified' = 'acidified',
+                  'Unacidified' = 'unacidified',
+                  'Rainbow Trout' = 'rainbowTrout',
+                  'Brook Trout' = 'brookTrout'
+                ),
+              )
+            ),
             
-            selectInput('Idq123',
+            selectInput('element',
                         h4('element'),
-                        choices = c('Both', 'N', 'C')),
+                        choices = c('Both' = 'both',
+                                    'N' = 'N',
+                                    'C' = 'C'),
+                        ),
+            
+            actionBttn(
+              inputId = "TDF_set",
+              tags$h4("SET TDF"),
+              style = "fill",
+              color = "success",
+              size = "sm",
+              block = TRUE
+            ),
             
             
-            tags$h2('Load Isotope Data', icon("fas fa-filter")),
-            tags$hr(),
-            textInput('consumer',
-                      h4('consumer'),
-                      value = 'Bilagay'),
-            
-            textInput('consumersColumn',
-                      h4('consumersColumn'),
-                      value = 'FG'),
-            
-            textInput('b1',
-                      h4('b1'),
-                      value = 'Pelagic_BL'),
-            
-            textInput('b2',
-                      h4('b2'),
-                      value = 'Benthic_BL'),
-            
-            textInput('baselineColumn',
-                      h4('baselineColumn'),
-                      value = 'FG'),
-            
-            textInput('group',
-                      h4('group'),
-                      value = 'Coquimbo'),
-            
-            textInput('groupsColumn',
-                      h4('groupsColumn'),
-                      value = 'Location'),
             
           ),
           mainPanel(uiOutput("content_TP"))
@@ -181,6 +207,7 @@ shinyUI(
                sidebarLayout(
                  sidebarPanel(
                    id = 'formulario',
+                   uiOutput("panel_post_sample"),
                    tags$h2('Create Model', icon("fas fa-cubes")),
                    tags$hr(),
                    numericInput('n.chains',
@@ -194,15 +221,36 @@ shinyUI(
                      inputId = "create_model",
                      tags$h4("CREATE MODEL"),
                      style = "fill",
-                     color = "success"
+                     color = "success",
+                     size = "sm",
+                     block = TRUE
                    ),
                    
-                   uiOutput("panel_post_sample"),
+                   conditionalPanel(
+                     condition = "input.create_model > 0",
+                     tags$h2('Make Post Samples', icon("fas fa-chart-bar"),
+                             style = "margin-top: 25px;"),
+                     tags$hr(),
+                     numericInput('n.iter',
+                                  h4('n.iter'),
+                                  value = 15000),
+                     
+                     actionBttn(
+                       inputId = "make_post",
+                       tags$h4("MAKE POST SAMPLES"),
+                       style = "fill",
+                       color = "success",
+                       size = "sm",
+                       block = TRUE
+                     ),
+                   )
+                   
+                   
                    
                  ),
                  
                  mainPanel(uiOutput("content_model"))
                )),
-    )
+    ),
   )
 )
