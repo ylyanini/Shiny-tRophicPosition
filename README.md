@@ -8,6 +8,10 @@ para optar al titulo de Ingeniero en Informática con Mención en Gestión de la
 
 El desarrollado del proyecto fue realizado por el estudiante Yan Lucaveche Alarcón en colaboración con el Dr. Carlos Valle y el Dr. Claudio Quezada de la Universidad de Playa Ancha.
 
+Para acceder y probar el proyecto ingrese al siguiente enlace:
+
+####**https://ylyanini.shinyapps.io/Shiny-tRophicPosition/**
+
 ## Descripción
 
 Aplicación basada en Shiny en conjunto del paquete tRophicPosition buscando ofrecer las prestaciones de este este ultimo a investigadores o entusiastas interesados en conocer el mundo de las posiciones tróficas y sus beneficios. 
@@ -19,6 +23,7 @@ Aplicación basada en Shiny en conjunto del paquete tRophicPosition buscando ofr
 - [**shinyjs**](https://github.com/daattali/shinyjs)
 - [**shinyWidgets**](https://github.com/dreamRs/shinyWidgets)
 - [**summarytools**](https://github.com/dcomtois/summarytools)
+- [**shinyscreenshot**](https://github.com/daattali/shinyscreenshot)
 - [**tRophicPosition**](https://github.com/clquezada/tRophicPosition)
 
 ## Usabilidad 

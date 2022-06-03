@@ -38,6 +38,9 @@ shinyUI(
                   type="image/png" />')
     ),
     
+    
+    
+    
     navbarPage(
       title = div(
         img(
@@ -46,8 +49,26 @@ shinyUI(
                    padding-right:9px;
                    padding-bottom:9px",
           height = 100
-        )
+        ),
+        useShinyjs(),
+        actionBttn(inputId = "refresh", 
+                   tags$h4("RESET"),
+                   style = "fill",
+                   color = "danger",
+                   block = TRUE,
+                   
+        ),
+        actionLink(
+          inputId = "github",
+          label = NULL,
+          color = "default",
+          style = "default",
+          icon("github"),
+          onclick = "window.open('https://github.com/ylyanini/Shiny-tRophicPosition', '_blank')",
+        ),
       ),
+      
+      
       
       windowTitle = "Shiny-tRophicPosition",
       
@@ -58,7 +79,7 @@ shinyUI(
                sidebarLayout(
                  sidebarPanel(
                    id = 'formulario',
-                   tags$h2("Upload File", icon("fas fa-folder")),
+                   tags$h2("Load File", icon("fas fa-folder")),
                    tags$hr(),
                    
                    radioButtons(
@@ -105,35 +126,37 @@ shinyUI(
                    # 
                    # uiOutput("select_file"),
                    
+                   
                    fileInput(
                      'file',
-                     tags$h3('Upload a File'),
+                     tags$h3('Load your File'),
                      accept = c('text/csv',
                                 'text/comma-separated-values',
                                 '.csv'),
-                     buttonLabel = tags$b("UPLOAD"),
+                     buttonLabel = tags$b("LOAD"),
                      placeholder = "Example.csv",
                      multiple = FALSE,
                    ),
                    
                    actionBttn(
                      inputId = "up_file",
-                     tags$h4("UPLOAD"),
+                     tags$h4("LOAD"),
                      style = "fill",
                      color = "success",
                      size = "sm",
-                     block = TRUE
+                     block = TRUE,
                    ),
                    
-                   useShinyjs(),
-                   actionBttn(inputId = "refresh", 
-                              tags$h4("CLEAR"),
-                              style = "fill",
-                              color = "danger",
-                              block = TRUE,
-                              
-                   )
-                   
+                   shinyjs::hidden(p(id = "process1", "Processing Data...")),
+                   # 
+                   # useShinyjs(),
+                   # actionBttn(inputId = "refresh", 
+                   #            tags$h4("RESET"),
+                   #            style = "fill",
+                   #            color = "danger",
+                   #            block = TRUE,
+                   #            
+                   # )
                    
                  ),
                  mainPanel(uiOutput("content_data"))
@@ -145,10 +168,10 @@ shinyUI(
       
       tabPanel(
         "IsotopeData Object",
+        id = 'IsotopeData_Object',
         sidebarLayout(
           sidebarPanel(
             id = 'formulario',
-            uiOutput("load_isotope"),
             
             tags$h2('Load TDF', icon("fas fa-cog")),
             tags$hr(),
@@ -175,6 +198,7 @@ shinyUI(
                   'Rainbow Trout' = 'rainbowTrout',
                   'Brook Trout' = 'brookTrout'
                 ),
+                selected = NULL,
               )
             ),
             
@@ -194,7 +218,7 @@ shinyUI(
               block = TRUE
             ),
             
-            
+            uiOutput("load_isotope"),
             
           ),
           mainPanel(uiOutput("content_TP"))

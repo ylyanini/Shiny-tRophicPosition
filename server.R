@@ -5,10 +5,16 @@ library(waiter)
 library(shinyjs)
 library(shinyWidgets)
 library(summarytools)
+library(shinyscreenshot)
 library(tRophicPosition)
 
 
 shinyServer(function(input, output) {
+  
+  ## ------------------------------------------------------------
+  # Global Waiter
+  
+  
   hostess <- Hostess$new("loader")
   
   for (i in 1:10) {
@@ -25,16 +31,21 @@ shinyServer(function(input, output) {
   # Upload file
   
   
-  make_df <- function() {
-    inFile <- input$file
-    df <- read.csv(
-      inFile$datapath,
-      header = as.logical(input$header),
-      sep = input$sep,
-      quote = input$quote
-    )
-    return(df)
-  }
+  # make_df <- function() {
+  #   inFile <- input$file
+  #   if (is.null(inFile)) {
+  #     return(NULL)
+  #   } else{
+  #     df <- read.csv(
+  #       inFile$datapath,
+  #       header = as.logical(input$header),
+  #       sep = input$sep,
+  #       quote = input$quote
+  #     )
+  #     
+  #     return(df)
+  #   }
+  # }
   
   df_upload <- reactive({
     inFile <- input$file
@@ -59,7 +70,7 @@ shinyServer(function(input, output) {
                   options = list(pageLength = 10, dom = 'tip'))
   })
   
-  plot_screenfoodweb <- function(){
+  plot_screenfoodweb <- function() {
     df <- df_upload()
     tRophicPosition::screenFoodWeb(
       df,
@@ -67,29 +78,12 @@ shinyServer(function(input, output) {
       title = "Food Webs",
       order = TRUE
     )
-    
   }
   
   output$screenfoodweb <- renderPlot({
     return(plot_screenfoodweb())
     
   })
-  
-  output$download <- downloadHandler(
-    filename =  function() {
-      paste("screenFoodWeb", Sys.Date(),".png", sep="")
-    },
-    contentType = "image/png",
-    content = function(file) {
-      png(
-        file,
-        width = 980,
-        height = 580)
-      plot_screenfoodweb()
-      dev.off()
-    })
-  
-  
   
   # Select file (under development)
   # observeEvent(input$select_a_file, {
@@ -112,6 +106,53 @@ shinyServer(function(input, output) {
   #     }
   #   })
   # })
+  
+  observeEvent(input$download_dfSummary,{
+    screenshot(
+      "#dfSummary",
+      filename = paste("dfSummary_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  observeEvent(input$download_screenfoodweb,{
+    screenshot(
+      "#screenfoodweb",
+      filename = paste("screenfoodweb_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  observe({
+    if(is.null(input$file)){
+      disable('up_file')
+      disable('TDF_set')
+      disable('create_model')
+    }else{
+      enable('up_file')
+      enable('TDF_set')
+      enable('create_model')
+    }
+  })
+  
+  # observe({
+  #   if (input$create_isotop == 0){
+  #     disable('create_model')
+  #   }else{
+  #     enable('create_model')
+  #   }
+  # })
+  
+  observeEvent(input$up_file, {
+    shinyjs::disable('file')
+    # updateButton(session, 'up_file', style='default')
+    shinyjs::disable('up_file')
+    shinyjs::show("process1")
+    Sys.sleep(2)
+    shinyjs::hide("process1")
+  })
   
   output$content_data <- renderUI({
     df <- df_upload()
@@ -160,33 +201,50 @@ shinyServer(function(input, output) {
                            )
                          )),
             
-            print(
-              dfSummary(
-                df,
-                varnumbers   = TRUE,
-                valid.col    = FALSE,
-                style        = "multiline",
-                graph.magnif = 1.5
+            div(
+              id="dfSummary",
+              print(
+                dfSummary(
+                  df,
+                  varnumbers   = TRUE,
+                  valid.col    = FALSE,
+                  style        = "multiline",
+                  graph.magnif = 1.5
+                ),
+                method   = 'render',
+                headings = FALSE,
+                bootstrap.css = FALSE
               ),
-              method   = 'render',
-              headings = FALSE,
-              bootstrap.css = FALSE
-            )
-            
-            
+            ),
+            actionBttn(
+              "download_dfSummary",
+              label = "DOWNLOAD SUMMARY",
+              icon("camera"),
+              style = "jelly",
+              color = "warning",
+              size = "xs"
+            ),
           )
         ),
+        
         column(
           width = 12,
           fluidPage(
             id = 'resultados',
             tags$h2("Data Species"),
-            plotOutput("screenfoodweb"),
-            downloadBttn('download',
-                         'DOWNLOAD PLOT',
-                         style = "material-flat",
-                         color = "warning")
-            
+            div(
+              id="screenfoodweb",
+              plotOutput("screenfoodweb"),
+            ),
+            br(),
+            actionBttn(
+              "download_screenfoodweb",
+              label = "DOWNLOAD PLOT",
+              icon("camera"),
+              style = "jelly",
+              color = "warning",
+              size = "xs"
+            ),
           )
         )
         
@@ -207,8 +265,27 @@ shinyServer(function(input, output) {
         column(width = 2),
       )
     }
-    
   })
+  
+  
+  # plotReady <- reactiveValues(ok = FALSE)
+  # 
+  # observeEvent(input$Button1, {
+  #   shinyjs::disable("Button1")
+  #   shinyjs::show("text1")
+  #   plotReady$ok <- FALSE
+  #   # do some cool and complex stuff
+  #   Sys.sleep(2)
+  #   plotReady$ok <- TRUE
+  # })
+  # 
+  # output$plot <-renderPlot({
+  #   if (plotReady$ok) {
+  #     shinyjs::enable("Button1")
+  #     shinyjs::hide("text1")
+  #     hist(rnorm(100, 4, 1),breaks = 50)
+  #   }
+  # })
   
   
   ## ------------------------------------------------------------
@@ -223,7 +300,6 @@ shinyServer(function(input, output) {
         type = input$type
       )
     )
-    
   })
   
   
@@ -242,7 +318,8 @@ shinyServer(function(input, output) {
           baselineColumn = input$baselineColumn,
           group = input$group,
           groupsColumn = input$groupsColumn,
-          deltaN = TDF$deltaN
+          deltaN = TDF$deltaN,
+          deltaC = NULL
         )
       
     } else if (input$element == 'C') {
@@ -256,7 +333,8 @@ shinyServer(function(input, output) {
           baselineColumn = input$baselineColumn,
           group = input$group,
           groupsColumn = input$groupsColumn,
-          deltaC = TDF$deltaC
+          deltaC = TDF$deltaC,
+          deltaN = NULL
         )
       
     } else{
@@ -279,10 +357,44 @@ shinyServer(function(input, output) {
     
   })
   
-  output$plot_content <- renderPlot({
+  output$plot_consumer <- renderPlot({
     consumer <- isotopeData()
-    
-    plot(consumer)
+    plot(consumer, b1 = input$b1, b2 = input$b2)
+  })
+  
+  output$tdf_summary <- renderPrint({
+    TDF <- TDF_values()
+    return(TDF)
+  })
+  
+  output$content_TP <- renderUI({
+    if (is.null(input$file)) {
+      fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2(
+                   "Remember upload your data to make the analysis",
+                   icon("smile")
+                 ),
+                 
+               )),
+        column(width = 2),
+      )
+    } else
+      (return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Define your TDF",
+                         icon("thumbs-up")),
+               )),
+        column(width = 2),
+      )))
     
   })
   
@@ -358,36 +470,6 @@ shinyServer(function(input, output) {
     })
   })
   
-  output$content_TP <- renderUI({
-    if (is.null(input$file)) {
-      fluidRow(
-        column(width = 12),
-        column(width = 3),
-        column(width = 7,
-               fluidRow(
-                 id = 'espera',
-                 tags$h2(
-                   "Remember upload your data to make the analysis",
-                   icon("smile")
-                 ),
-                 
-               )),
-        column(width = 2),
-      )
-    } else
-      (return(fluidRow(
-        column(width = 12),
-        column(width = 3),
-        column(width = 7,
-               fluidRow(
-                 id = 'espera',
-                 tags$h2("Define your TDF",
-                         icon("thumbs-up")),
-               )),
-        column(width = 2),
-      )))
-    
-  })
   
   
   observeEvent(input$TDF_set, {
@@ -424,6 +506,24 @@ shinyServer(function(input, output) {
     })
   })
   
+  observeEvent(input$download_tdf_summary,{
+    screenshot(
+      "#tdf_summary",
+      filename = paste("tdf_summary", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  observeEvent(input$download_plot_consumer,{
+    screenshot(
+      "#plot_consumer",
+      filename = paste("plot_consumer_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
   observeEvent(input$create_isotop, {
     output$content_TP <- renderUI({
       if (is.null(input$file)) {
@@ -442,16 +542,54 @@ shinyServer(function(input, output) {
           column(width = 2),
         )
       } else
-        (return(fluidRow(column(
-          width = 12,
-          fluidPage(
-            id = 'resultados',
-            tags$h2("Plot Isotope Object"),
-            plotOutput('plot_content')
-          )
-        ))))
+        (return(fluidRow(
+          Sys.sleep(2),
+          column(
+            width = 12,
+            fluidPage(
+              id = 'resultados',
+              tags$h2("Trophic Discrimination Factor"),
+              div(
+                id = "tdf_summary",
+                verbatimTextOutput('tdf_summary')
+              ),
+              br(),
+              actionBttn(
+                "download_tdf_summary",
+                label = "DOWNLOAD SUMMARY",
+                icon("camera"),
+                style = "jelly",
+                color = "warning",
+                size = "xs"
+              ),
+            )
+          ),
+          column(
+            width = 12,
+            fluidPage(
+              id = 'resultados',
+              tags$h2("Plot Isotope Object"),
+              div(
+                id = "plot_consumer",
+                plotOutput('plot_consumer')
+              ),
+              br(),
+              actionBttn(
+                "download_plot_consumer",
+                label = "DOWNLOAD PLOT",
+                icon("camera"),
+                style = "jelly",
+                color = "warning",
+                size = "xs"
+              ),
+            )
+          ),
+          
+        )))
     })
   })
+  
+  
   
   ## ------------------------------------------------------------
   # Posterior Sample
@@ -534,19 +672,17 @@ shinyServer(function(input, output) {
         column(width = 2),
       )
     } else
-      (
-        return(fluidRow(
-          column(width = 12),
-          column(width = 3),
-          column(width = 7,
-                 fluidRow(
-                   id = 'espera',
-                   tags$h2("Let's create the model now",
-                           icon("thumbs-up")),
-                 )),
-          column(width = 2),
-        ))
-      )
+      (return(fluidRow(
+        column(width = 12),
+        column(width = 3),
+        column(width = 7,
+               fluidRow(
+                 id = 'espera',
+                 tags$h2("Let's create the model now",
+                         icon("thumbs-up")),
+               )),
+        column(width = 2),
+      )))
     
   })
   
@@ -583,6 +719,37 @@ shinyServer(function(input, output) {
     })
   })
   
+  
+  observeEvent(input$download_post_summary,{
+    screenshot(
+      "#post_summary",
+      filename = paste("post_summary_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  observeEvent(input$download_plot_post,{
+    screenshot(
+      "#plot_post",
+      filename = paste("plot_post_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  observeEvent(input$download_plot_TP,{
+    screenshot(
+      "#plot_TP",
+      filename = paste("plot_TP_", Sys.Date(), ".png", sep = ""),
+      timer = 1,
+      scale = 3
+    )
+  })
+  
+  
+  
+  
   observeEvent(input$make_post, {
     output$content_model <- renderUI({
       if (is.null(input$file)) {
@@ -601,30 +768,67 @@ shinyServer(function(input, output) {
           column(width = 2),
         )
       } else
-        (
-          return(fluidRow(
-            column(
-              width = 12,
-              fluidPage(
-                id = 'resultados',
-                tags$h2("Posterior Summary"),
+        (return(fluidRow(
+          column(
+            width = 12,
+            fluidPage(
+              id = 'resultados',
+              tags$h2("Posterior Summary"),
+              div(
+                id = "post_summary",
                 verbatimTextOutput('post_summary')
-              )
-            ),
-            column(
-              width = 12,
-              fluidPage(id = 'resultados',
-                        tags$h2("Plot"),
-                        plotOutput('plot_post'),)
-            ),
-            column(
-              width = 12,
-              fluidPage(id = 'resultados',
-                        tags$h2("Plot"),
-                        plotOutput('plot_TP'))
-            ),
-          ))
-        )
+              ),
+              br(),
+              actionBttn(
+                "download_post_summary",
+                label = "DOWNLOAD SUMMARY",
+                icon("camera"),
+                style = "jelly",
+                color = "warning",
+                size = "xs"
+              ),
+              
+            )
+          ),
+          column(
+            width = 12,
+            fluidPage(id = 'resultados',
+                      tags$h2("Plot"),
+                      div(
+                        id = "plot_post",
+                        plotOutput('plot_post'),
+                      ),
+                      br(),
+                      actionBttn(
+                        "download_plot_post",
+                        label = "DOWNLOAD PLOT",
+                        icon("camera"),
+                        style = "jelly",
+                        color = "warning",
+                        size = "xs"
+                      ),
+            )
+          ),
+          column(
+            width = 12,
+            fluidPage(id = 'resultados',
+                      tags$h2("Plot"),
+                      div(
+                        id = "plot_TP",
+                        plotOutput('plot_TP'),
+                      ),
+                      br(),
+                      actionBttn(
+                        "download_plot_TP",
+                        label = "DOWNLOAD PLOT",
+                        icon("camera"),
+                        style = "jelly",
+                        color = "warning",
+                        size = "xs"
+                      ),
+            )
+          ),
+        )))
     })
   })
   

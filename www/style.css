@@ -8,6 +8,12 @@
     src: url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700&display=swap');
 }
 
+*{
+  color: #000000;
+  scroll-behavior: smooth;
+}
+
+
 body::-webkit-scrollbar {
   width: 4px;               
 }
@@ -22,14 +28,9 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid #03A688;  
 }
 
-*{
-  color: #000000;
-  scroll-behavior: smooth;
-}
-
 body {
   background-color: #f9f9f9;
-  font-family: 'Lora', serif;
+  font-family: 'Montserrat Alternates', sans-serif;
   text-align: justify;
   
 }
@@ -109,6 +110,19 @@ div>p{
 }
 
 
+.bttn-jelly.bttn-warning{
+  color: #000000;
+  font-weight: bold;
+  background: rgba( 234, 255, 248, 0.5 );
+  border: 1px solid #353535;
+  border-radius: 180px;
+  
+}
+
+.shiny-file-input-progress {
+  display: none
+}
+
 #plot{
 
 }
@@ -120,6 +134,24 @@ div>p{
 
 #nav-tabs{
   margin-top: 100px;
+}
+
+#refresh{
+  position: absolute;
+  top: 15px;
+  right: 60px;
+  z-index: 9;
+  width: 150px;
+}
+
+#github{
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  z-index: 9;
+  width: 30px;
+  border-radius: 25px;
+  font-size: 40px;
 }
 
 #formulario h1,h2{
@@ -173,6 +205,10 @@ div>p{
 
 #DataTables_Table_0_wrapper td{
   
+}
+
+#download{
+  background-color: #3AF207;
 }
 
 #resultados{
