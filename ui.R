@@ -38,9 +38,6 @@ shinyUI(
                   type="image/png" />')
     ),
     
-    
-    
-    
     navbarPage(
       title = div(
         img(
@@ -55,21 +52,21 @@ shinyUI(
                    tags$h4("RESET"),
                    style = "fill",
                    color = "danger",
-                   block = TRUE,
-                   
-        ),
+                   block = TRUE
+                   ),
+        
         actionLink(
           inputId = "github",
           label = NULL,
           color = "default",
           style = "default",
           icon("github"),
-          onclick = "window.open('https://github.com/ylyanini/Shiny-tRophicPosition', '_blank')",
+          onclick = "window.open(
+          'https://github.com/ylyanini/Shiny-tRophicPosition',
+          '_blank')",
         ),
       ),
-      
-      
-      
+
       windowTitle = "Shiny-tRophicPosition",
       
       ## ------------------------------------------------------------
@@ -79,84 +76,26 @@ shinyUI(
                sidebarLayout(
                  sidebarPanel(
                    id = 'formulario',
-                   tags$h2("Load File", icon("fas fa-folder")),
+                   tags$h2("Let's set the Dataset", icon("fas fa-folder")),
                    tags$hr(),
                    
-                   radioButtons(
-                     "sep",
-                     tags$h3("Separator"),
-                     choices = c(
-                       'Comma' = ",",
-                       'Semicolon' = ";",
-                       'Tab' = "\t"
-                     ),
-                     selected = ",",
-                     inline = TRUE
+                   radioGroupButtons(
+                     inputId = "type_dataset",
+                     choices = c('<h4>LOAD</h4>', 
+                                 '<h4>GENERATE</h4>'),
+                     justified = TRUE,
+                     
+                     status='primary',
+                     checkIcon = list(
+                                  yes = icon("ok",
+                                  lib = "glyphicon",
+                                  style = "color: #fff")),
+                     selected = '<h4>LOAD</h4>'
                    ),
-                   
-                   radioButtons(
-                     "quote",
-                     tags$h3("Comma"),
-                     choices = c(
-                       'None' = "",
-                       'Double Quote' = '"',
-                       "Single Quote" = "'"
-                     ),
-                     selected = '"',
-                     inline = TRUE
-                   ),
-                   
-                   radioButtons(
-                     inputId = 'header',
-                     label = tags$h3('Header'),
-                     choices = c(
-                       'Yes' = TRUE,
-                       'No' =  FALSE),
-                     selected = TRUE,
-                     inline = TRUE,
-                   ),
-                   
-                   # Select file (under development)
-                   # selectInput(
-                   #   'select_a_file',
-                   #   tags$h3('Name of File'),
-                   #   choices =  c(list.files('data/'), 'New'),
-                   #   selected = NULL
-                   # ),
-                   # 
-                   # uiOutput("select_file"),
-                   
-                   
-                   fileInput(
-                     'file',
-                     tags$h3('Load your File'),
-                     accept = c('text/csv',
-                                'text/comma-separated-values',
-                                '.csv'),
-                     buttonLabel = tags$b("LOAD"),
-                     placeholder = "Example.csv",
-                     multiple = FALSE,
-                   ),
-                   
-                   actionBttn(
-                     inputId = "up_file",
-                     tags$h4("LOAD"),
-                     style = "fill",
-                     color = "success",
-                     size = "sm",
-                     block = TRUE,
-                   ),
+                  
+                   uiOutput('dataset_config'),
                    
                    shinyjs::hidden(p(id = "process1", "Processing Data...")),
-                   # 
-                   # useShinyjs(),
-                   # actionBttn(inputId = "refresh", 
-                   #            tags$h4("RESET"),
-                   #            style = "fill",
-                   #            color = "danger",
-                   #            block = TRUE,
-                   #            
-                   # )
                    
                  ),
                  mainPanel(uiOutput("content_data"))
@@ -177,10 +116,10 @@ shinyUI(
             tags$hr(),
             selectInput(
               inputId = "TDF_author",
-              label = tags$h4("author"),
+              label = tags$h4("Author"),
               choices = c('Post (2002)' = 'Post',
-                          'McCutchan (2003)' = 'McCutchan'
-                          # 'New'
+                          'McCutchan (2003)' = 'McCutchan',
+                          'Personalized' = 'Personalized'
               ),
             ),
             
@@ -200,6 +139,52 @@ shinyUI(
                 ),
                 selected = NULL,
               )
+            ),
+            
+            conditionalPanel(
+              condition = "input.TDF_author == 'Personalized'",
+              
+              numericInput('DeltaN',
+                           h4('DeltaN'),
+                           value = 3.4, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
+              
+              numericInput('DeltaC',
+                           h4('DeltaC'),
+                           value = 0.39, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
+              
+              numericInput('sd.DeltaN',
+                           h4('sd.DeltaN'),
+                           value = 0.98, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
+              
+              numericInput('sd.DeltaC',
+                           h4('sd.DeltaC'),
+                           value = 1.3, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
+              
+              numericInput('n.obsDeltaN',
+                           h4('n.obsDeltaN'),
+                           value = 56, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
+              
+              numericInput('n.obsDeltaC',
+                           h4('n.obsDeltaC'),
+                           value = 107, 
+                           min = -100,
+                           max = 100,
+                           step = 0.01),
             ),
             
             selectInput('element',
@@ -234,6 +219,36 @@ shinyUI(
                    uiOutput("panel_post_sample"),
                    tags$h2('Create Model', icon("fas fa-cubes")),
                    tags$hr(),
+                   
+                   selectInput(
+                     inputId = "type_model",
+                     label = tags$h4("Type of Model"),
+                     choices = c("oneBaseline", 
+                                 "twoBaselines", 
+                                 "twoBaselinesFull",
+                                 "Multiple Bayesian Models"
+                     ),
+                   ),
+                   
+                   conditionalPanel(
+                     condition = "input.type_model == 'Multiple Bayesian Models'",
+                     checkboxGroupButtons(
+                       inputId = "models_selected",
+                       label = tags$h4("Select Models"),
+                       choices = c("oneBaseline", 
+                                   "twoBaselines", 
+                                   "twoBaselinesFull" 
+                                   ),
+                       individual = TRUE,
+                       checkIcon = list(
+                         yes = tags$i(class = "fa fa-circle", 
+                                      style = "color: #005CC8"),
+                         no = tags$i(class = "fa fa-circle-o", 
+                                     style = "color: #005CC8"))
+                     )
+                     
+                   ),
+                   
                    numericInput('n.chains',
                                 h4('n.chains'),
                                 value = 4),

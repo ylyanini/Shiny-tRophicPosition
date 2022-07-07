@@ -10,7 +10,6 @@ library(tRophicPosition)
 
 
 shinyServer(function(input, output) {
-  
   ## ------------------------------------------------------------
   # Global Waiter
   
@@ -42,32 +41,102 @@ shinyServer(function(input, output) {
   #       sep = input$sep,
   #       quote = input$quote
   #     )
-  #     
+  #
   #     return(df)
   #   }
   # }
   
+  
+  
+  # df_upload <- reactive({
+  #   inFile <- input$file
+  #   if (is.null(inFile)) {
+  #     return(NULL)
+  #   } else{
+  #     df <- read.csv(
+  #       inFile$datapath,
+  #       header = as.logical(input$header),
+  #       sep = input$sep,
+  #       quote = input$quote
+  #     )
+  #
+  #     return(df)
+  #   }
+  # })
+  
   df_upload <- reactive({
-    inFile <- input$file
-    if (is.null(inFile)) {
-      return(NULL)
-    } else{
+    if (input$select_a_file == "Upload") {
+      inFile <- input$file
+      if (is.null(inFile)) {
+        return(NULL)
+      } else{
+        df <- read.csv(
+          inFile$datapath,
+          header = as.logical(input$header),
+          sep = input$sep,
+          quote = input$quote
+        )
+        
+        return(df)
+      }
+      
+    } else if (input$select_a_file == "Bilagay-MEC") {
       df <- read.csv(
-        inFile$datapath,
+        'data/Bilagay-MEC.csv',
         header = as.logical(input$header),
         sep = input$sep,
         quote = input$quote
       )
-      
       return(df)
+      
+    } else if (input$select_a_file == "Bilagay_for_tRophicPosition") {
+      df <- read.csv(
+        'data/Bilagay_for_tRophicPosition.csv',
+        header = as.logical(input$header),
+        sep = input$sep,
+        quote = input$quote
+      )
+      return(df)
+    } else{
+      return(NULL)
     }
   })
   
+  df_generate <- reactive({
+    df <- tRophicPosition::generateTPData(
+      dCb1 = input$dCb1,
+      dNb1 = input$dNb1,
+      dCc = input$dCc,
+      dNc = input$dNc,
+      dCb2 = input$dCb2,
+      dNb2 = input$dNb2,
+      consumer = input$consumer_name
+    )
+    
+    return(df)
+  })
+  
   output$sample_table <- DT::renderDataTable({
-    df <- df_upload()
-    DT::datatable(df,
-                  class = 'cell-border stripe',
-                  options = list(pageLength = 10, dom = 'tip'))
+    if (as.logical(input$up_file) == TRUE ) {
+      df <- df_upload()
+      DT::datatable(df,
+                    class = 'cell-border stripe',
+                    options = list(pageLength = 10, dom = 'tip'))
+    }else if(as.logical(input$up_create_dataset) == TRUE ) {
+      df <- df_generate()
+      result <- array(c(df[1:6]), dim = c(6, 25))
+      DT::datatable(result,
+                    class = 'cell-border stripe',
+                    options = list(pageLength = 10, dom = 'tip'),
+                    colnames = c('dNb1', 
+                                 'dCb1', 
+                                 'dNb2', 
+                                 'dCb2', 
+                                 'dNc',
+                                 'dCc'))
+      
+    }
+    
   })
   
   plot_screenfoodweb <- function() {
@@ -107,16 +176,16 @@ shinyServer(function(input, output) {
   #   })
   # })
   
-  observeEvent(input$download_dfSummary,{
+  observeEvent(input$download_dfSummary, {
     screenshot(
       "#dfSummary",
-      filename = paste("dfSummary_", Sys.Date(), ".png", sep = ""),
+      filename = paste("dfSummary_", Sys.Date(), "", sep = ""),
       timer = 1,
       scale = 3
     )
   })
   
-  observeEvent(input$download_screenfoodweb,{
+  observeEvent(input$download_screenfoodweb, {
     screenshot(
       "#screenfoodweb",
       filename = paste("screenfoodweb_", Sys.Date(), ".png", sep = ""),
@@ -125,17 +194,17 @@ shinyServer(function(input, output) {
     )
   })
   
-  observe({
-    if(is.null(input$file)){
-      disable('up_file')
-      disable('TDF_set')
-      disable('create_model')
-    }else{
-      enable('up_file')
-      enable('TDF_set')
-      enable('create_model')
-    }
-  })
+  # observe({
+  #   if(is.null(input$file)){
+  #     disable('up_file')
+  #     disable('TDF_set')
+  #     disable('create_model')
+  #   }else{
+  #     enable('up_file')
+  #     enable('TDF_set')
+  #     enable('create_model')
+  #   }
+  # })
   
   # observe({
   #   if (input$create_isotop == 0){
@@ -148,16 +217,174 @@ shinyServer(function(input, output) {
   observeEvent(input$up_file, {
     shinyjs::disable('file')
     # updateButton(session, 'up_file', style='default')
-    shinyjs::disable('up_file')
     shinyjs::show("process1")
     Sys.sleep(2)
     shinyjs::hide("process1")
+    
+    shinyjs::disable('up_file')
+    shinyjs::disable('up_create_dataset')
+    shinyjs::disable('type_dataset')
+    shinyjs::disable('select_a_file')
   })
   
+  
+  observeEvent(input$type_dataset, {
+    output$dataset_config <- renderUI({
+      
+        if (input$type_dataset == '<h4>LOAD</h4>') {
+          fluidRow(column(
+            width = 12,
+
+            pickerInput(
+              'select_a_file',
+              tags$h3('Select a File'),
+              choices =  c(
+                'Bilagay-MEC',
+                'Bilagay_for_tRophicPosition',
+                'Upload'
+              ),
+              selected = NULL,
+              options = list(`live-search` = TRUE)
+            ),
+
+            conditionalPanel(
+              condition = "input.select_a_file == 'Upload' ",
+              radioButtons(
+                "sep",
+                tags$h3("Separator"),
+                choices = c(
+                  'Comma' = ",",
+                  'Semicolon' = ";",
+                  'Tab' = "\t"
+                ),
+                selected = ",",
+                inline = TRUE
+              ),
+
+              radioButtons(
+                "quote",
+                tags$h3("Comma"),
+                choices = c(
+                  'None' = "",
+                  'Double Quote' = '"',
+                  "Single Quote" = "'"
+                ),
+                selected = '"',
+                inline = TRUE
+              ),
+
+              radioButtons(
+                inputId = 'header',
+                label = tags$h3('Header'),
+                choices = c('Yes' = TRUE,
+                            'No' =  FALSE),
+                selected = TRUE,
+                inline = TRUE,
+              ),
+
+              fileInput(
+                'file',
+                tags$h3('Load your File'),
+                accept = c('text/csv',
+                           'text/comma-separated-values',
+                           '.csv'),
+                buttonLabel = tags$b(icon("fas fa-folder")),
+                placeholder = "Example.csv",
+                multiple = FALSE,
+              ),
+            ),
+
+            actionBttn(
+              inputId = "up_file",
+              tags$h4("LOAD DATASET"),
+              style = "fill",
+              color = "success",
+              size = "sm",
+              block = TRUE,
+            ),
+          ))
+        } else if (input$type_dataset == '<h4>GENERATE</h4>') {
+          fluidRow(
+            column(
+              width = 12,
+              numericInput(
+                'dCb1',
+                h4('dCb1'),
+                value = -17.3,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              numericInput(
+                'dNb1',
+                h4('dNb1'),
+                value = 14.2,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              numericInput(
+                'dCc',
+                h4('dCc'),
+                value = -15,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              numericInput(
+                'dNc',
+                h4('dNc'),
+                value = 21,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              numericInput(
+                'dCb2',
+                h4('dCb2'),
+                value = -12.7,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              numericInput(
+                'dNb2',
+                h4('dNb2'),
+                value = 15.4,
+                min = -100,
+                max = 100,
+                step = 0.01
+              ),
+
+              textInput('consumer_name',
+                        h4('Consumer Name'),
+                        'Consumer'),
+
+              actionBttn(
+                inputId = "up_create_dataset",
+                tags$h4("GENERATE DATASET"),
+                style = "fill",
+                color = "success",
+                size = "sm",
+                block = TRUE,
+              ),
+
+            )
+          )
+        }
+    })
+  })
+  
+  # && !is.null(df_upload())
   output$content_data <- renderUI({
-    df <- df_upload()
-    if (as.logical(input$up_file) == TRUE &&
-        !is.null(input$file)) {
+    
+    if (!is.null(input$up_file) && input$up_file>0) {
+      df <- df_upload()
       fluidRow(
         column(
           width = 12,
@@ -202,7 +429,7 @@ shinyServer(function(input, output) {
                          )),
             
             div(
-              id="dfSummary",
+              id = "dfSummary",
               print(
                 dfSummary(
                   df,
@@ -213,7 +440,9 @@ shinyServer(function(input, output) {
                 ),
                 method   = 'render',
                 headings = FALSE,
-                bootstrap.css = FALSE
+                bootstrap.css = FALSE,
+                style = "grid",
+                tmp.img.dir = "/tmp"
               ),
             ),
             actionBttn(
@@ -232,10 +461,8 @@ shinyServer(function(input, output) {
           fluidPage(
             id = 'resultados',
             tags$h2("Data Species"),
-            div(
-              id="screenfoodweb",
-              plotOutput("screenfoodweb"),
-            ),
+            div(id = "screenfoodweb",
+                plotOutput("screenfoodweb"), ),
             br(),
             actionBttn(
               "download_screenfoodweb",
@@ -247,12 +474,103 @@ shinyServer(function(input, output) {
             ),
           )
         )
+      )
+    }else if (!is.null(input$up_create_dataset) && input$up_create_dataset>0) {
+      df <- df_generate()
+      fluidRow(
+        column(
+          width = 12,
+          fluidPage(
+            id = 'resultados',
+            tags$h2("Data Table"),
+            DT::dataTableOutput("sample_table")
+          )
+        ),
         
+        # column(
+        #   width = 12,
+        #   fluidPage(
+        #     id = 'resultados',
+        #     tags$h2("Data Summary"),
+        #     
+        #     st_options(dfSummary.custom.2 =
+        #                  expression(
+        #                    paste(
+        #                      "Q1 & Q4 :",
+        #                      
+        #                      quantile(
+        #                        column_data,
+        #                        probs = .25,
+        #                        type = 2,
+        #                        names = FALSE,
+        #                        na.rm = TRUE
+        #                      ),
+        #                      digits = 1
+        #                      ,
+        #                      " & ",
+        #                      
+        #                      quantile(
+        #                        column_data,
+        #                        probs = 1,
+        #                        type = 2,
+        #                        names = FALSE,
+        #                        na.rm = TRUE
+        #                      ),
+        #                      digits = 1
+        #                      
+        #                    )
+        #                  )),
+        #     
+        #     div(
+        #       id = "dfSummary",
+        #       print(
+        #         dfSummary(
+        #           df,
+        #           varnumbers   = TRUE,
+        #           valid.col    = FALSE,
+        #           style        = "multiline",
+        #           graph.magnif = 1.5
+        #         ),
+        #         method   = 'render',
+        #         headings = FALSE,
+        #         bootstrap.css = FALSE,
+        #         style = "grid",
+        #         tmp.img.dir = "/tmp"
+        #       ),
+        #     ),
+        #     actionBttn(
+        #       "download_dfSummary",
+        #       label = "DOWNLOAD SUMMARY",
+        #       icon("camera"),
+        #       style = "jelly",
+        #       color = "warning",
+        #       size = "xs"
+        #     ),
+        #   )
+        # ),
+        
+        # column(
+        #   width = 12,
+        #   fluidPage(
+        #     id = 'resultados',
+        #     tags$h2("Data Species"),
+        #     div(id = "screenfoodweb",
+        #         plotOutput("screenfoodweb"), ),
+        #     br(),
+        #     actionBttn(
+        #       "download_screenfoodweb",
+        #       label = "DOWNLOAD PLOT",
+        #       icon("camera"),
+        #       style = "jelly",
+        #       color = "warning",
+        #       size = "xs"
+        #     ),
+        #   )
+        # )
       )
       
-      
-    }
-    else{
+    }else if(as.logical(input$up_file) == FALSE ||
+            as.logical(input$up_create_dataset) == FALSE){
       fluidRow(
         column(width = 12),
         column(width = 3),
@@ -269,7 +587,7 @@ shinyServer(function(input, output) {
   
   
   # plotReady <- reactiveValues(ok = FALSE)
-  # 
+  #
   # observeEvent(input$Button1, {
   #   shinyjs::disable("Button1")
   #   shinyjs::show("text1")
@@ -278,7 +596,7 @@ shinyServer(function(input, output) {
   #   Sys.sleep(2)
   #   plotReady$ok <- TRUE
   # })
-  # 
+  #
   # output$plot <-renderPlot({
   #   if (plotReady$ok) {
   #     shinyjs::enable("Button1")
@@ -506,7 +824,7 @@ shinyServer(function(input, output) {
     })
   })
   
-  observeEvent(input$download_tdf_summary,{
+  observeEvent(input$download_tdf_summary, {
     screenshot(
       "#tdf_summary",
       filename = paste("tdf_summary", Sys.Date(), ".png", sep = ""),
@@ -515,7 +833,7 @@ shinyServer(function(input, output) {
     )
   })
   
-  observeEvent(input$download_plot_consumer,{
+  observeEvent(input$download_plot_consumer, {
     screenshot(
       "#plot_consumer",
       filename = paste("plot_consumer_", Sys.Date(), ".png", sep = ""),
@@ -549,10 +867,8 @@ shinyServer(function(input, output) {
             fluidPage(
               id = 'resultados',
               tags$h2("Trophic Discrimination Factor"),
-              div(
-                id = "tdf_summary",
-                verbatimTextOutput('tdf_summary')
-              ),
+              div(id = "tdf_summary",
+                  verbatimTextOutput('tdf_summary')),
               br(),
               actionBttn(
                 "download_tdf_summary",
@@ -569,10 +885,8 @@ shinyServer(function(input, output) {
             fluidPage(
               id = 'resultados',
               tags$h2("Plot Isotope Object"),
-              div(
-                id = "plot_consumer",
-                plotOutput('plot_consumer')
-              ),
+              div(id = "plot_consumer",
+                  plotOutput('plot_consumer')),
               br(),
               actionBttn(
                 "download_plot_consumer",
@@ -720,7 +1034,7 @@ shinyServer(function(input, output) {
   })
   
   
-  observeEvent(input$download_post_summary,{
+  observeEvent(input$download_post_summary, {
     screenshot(
       "#post_summary",
       filename = paste("post_summary_", Sys.Date(), ".png", sep = ""),
@@ -729,7 +1043,7 @@ shinyServer(function(input, output) {
     )
   })
   
-  observeEvent(input$download_plot_post,{
+  observeEvent(input$download_plot_post, {
     screenshot(
       "#plot_post",
       filename = paste("plot_post_", Sys.Date(), ".png", sep = ""),
@@ -738,7 +1052,7 @@ shinyServer(function(input, output) {
     )
   })
   
-  observeEvent(input$download_plot_TP,{
+  observeEvent(input$download_plot_TP, {
     screenshot(
       "#plot_TP",
       filename = paste("plot_TP_", Sys.Date(), ".png", sep = ""),
@@ -774,10 +1088,8 @@ shinyServer(function(input, output) {
             fluidPage(
               id = 'resultados',
               tags$h2("Posterior Summary"),
-              div(
-                id = "post_summary",
-                verbatimTextOutput('post_summary')
-              ),
+              div(id = "post_summary",
+                  verbatimTextOutput('post_summary')),
               br(),
               actionBttn(
                 "download_post_summary",
@@ -792,40 +1104,38 @@ shinyServer(function(input, output) {
           ),
           column(
             width = 12,
-            fluidPage(id = 'resultados',
-                      tags$h2("Plot"),
-                      div(
-                        id = "plot_post",
-                        plotOutput('plot_post'),
-                      ),
-                      br(),
-                      actionBttn(
-                        "download_plot_post",
-                        label = "DOWNLOAD PLOT",
-                        icon("camera"),
-                        style = "jelly",
-                        color = "warning",
-                        size = "xs"
-                      ),
+            fluidPage(
+              id = 'resultados',
+              tags$h2("Plot"),
+              div(id = "plot_post",
+                  plotOutput('plot_post'), ),
+              br(),
+              actionBttn(
+                "download_plot_post",
+                label = "DOWNLOAD PLOT",
+                icon("camera"),
+                style = "jelly",
+                color = "warning",
+                size = "xs"
+              ),
             )
           ),
           column(
             width = 12,
-            fluidPage(id = 'resultados',
-                      tags$h2("Plot"),
-                      div(
-                        id = "plot_TP",
-                        plotOutput('plot_TP'),
-                      ),
-                      br(),
-                      actionBttn(
-                        "download_plot_TP",
-                        label = "DOWNLOAD PLOT",
-                        icon("camera"),
-                        style = "jelly",
-                        color = "warning",
-                        size = "xs"
-                      ),
+            fluidPage(
+              id = 'resultados',
+              tags$h2("Plot"),
+              div(id = "plot_TP",
+                  plotOutput('plot_TP'), ),
+              br(),
+              actionBttn(
+                "download_plot_TP",
+                label = "DOWNLOAD PLOT",
+                icon("camera"),
+                style = "jelly",
+                color = "warning",
+                size = "xs"
+              ),
             )
           ),
         )))

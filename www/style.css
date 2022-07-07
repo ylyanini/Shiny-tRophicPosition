@@ -123,6 +123,10 @@ div>p{
   display: none
 }
 
+
+
+
+
 #plot{
 
 }
@@ -161,9 +165,7 @@ div>p{
 
 #formulario{
   font-size: 15px;
-  overflow:auto;
   text-align: left;
-
   border-width: 4px;
   background: rgba( 234, 255, 248, 0.5 );
   box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );

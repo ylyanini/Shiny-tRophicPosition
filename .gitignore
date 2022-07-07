@@ -1,6 +1,7 @@
+rconnect/
+test/
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-rconnect
-rconnect/
+
