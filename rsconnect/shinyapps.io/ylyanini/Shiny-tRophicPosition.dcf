@@ -5,9 +5,9 @@ account: ylyanini
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6424520
-bundleId: 6062326
+bundleId: 6894147
 url: https://ylyanini.shinyapps.io/Shiny-tRophicPosition/
-when: 1656708675.03763
-lastSyncTime: 1656708675.03764
+when: 1677528072.36269
+lastSyncTime: 1677528072.36271
 asMultiple: FALSE
 asStatic: FALSE

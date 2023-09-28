@@ -18,12 +18,13 @@ Aplicación basada en Shiny en conjunto del paquete tRophicPosition buscando ofr
 
 ### Librerías utilizadas
 - [**DT**](https://github.com/rstudio/DT)
-- [**shiny**](https://github.com/rstudio/shiny)
-- [**waiter**](https://github.com/JohnCoene/waiter)
-- [**shinyjs**](https://github.com/daattali/shinyjs)
-- [**shinyWidgets**](https://github.com/dreamRs/shinyWidgets)
-- [**summarytools**](https://github.com/dcomtois/summarytools)
-- [**shinyscreenshot**](https://github.com/daattali/shinyscreenshot)
+- [**Sass**](https://github.com/rstudio/sass/)
+- [**Shiny**](https://github.com/rstudio/shiny)
+- [**Waiter**](https://github.com/JohnCoene/waiter)
+- [**Shinyjs**](https://github.com/daattali/shinyjs)
+- [**ShinyWidgets**](https://github.com/dreamRs/shinyWidgets)
+- [**Summarytools**](https://github.com/dcomtois/summarytools)
+- [**Shinyscreenshot**](https://github.com/daattali/shinyscreenshot)
 - [**tRophicPosition**](https://github.com/clquezada/tRophicPosition)
 
 ## Usabilidad 
